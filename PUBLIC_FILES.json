@@ -1,0 +1,22 @@
+{
+  "version": "1.0.1",
+  "files": [
+    ".gitattributes",
+    ".github/workflows/tests.yml",
+    ".gitignore",
+    "LICENSE",
+    "PUBLIC_FILES.json",
+    "README.md",
+    "README.zh-CN.md",
+    "SECURITY.md",
+    "SHA256SUMS",
+    "SKILL.md",
+    "agents/openai.yaml",
+    "references/records.md",
+    "references/workflow.md",
+    "scripts/check_public.py",
+    "scripts/setup.py",
+    "tests/test_public.py",
+    "tests/test_setup.py"
+  ]
+}
