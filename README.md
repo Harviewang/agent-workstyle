@@ -1,71 +1,76 @@
-# Codex Workstyle
+# agent-workstyle 2.0.0
 
-一个让 Codex **讲清进度、说明决策、记全要求，并在已授权范围内连续完成工作**的独立开源 Skill。
+让 Claude、Codex、Gemini **讲清进度与决策、记全要求，并在已授权的小步内持续完成工作**的公开 Skill。支持任一家或任意组合，按能力档位分工，如实记录降级；个人型号映射留在本机私有档案。
 
-遵循 [Agent Skills](https://agentskills.io) 的自包含目录方式。只改善 Codex，不要求安装或修改 Claude，也不需要外部服务、指定模型或其他 Skill。
+## 发给目标客户端安装
 
-## 把地址发给另一台电脑上的 Codex
+仓库地址：`https://github.com/Harviewang/agent-workstyle`。安装保留已有配置与权限，不复制账号；安装后开真正的新会话。三段任选对应客户端，不需要同时安装三家。
 
-把下面这段话发给已经可用的 Codex：
-
-```text
-请用 skill-installer 安装 https://github.com/Harviewang/codex-workstyle 。
-仓库中的技能路径是 .，安装名称为 codex-workstyle。
-只安装技能，保留已有配置，不修改 Claude。安装后核对文件并告诉我如何使用。
-```
-
-安装后在新会话说：
+**Claude：**
 
 ```text
-使用 $codex-workstyle 接续这个项目，先核对已有要求和进度，再继续已批准的工作。
+请把 https://github.com/Harviewang/agent-workstyle 的完整 Skill 仓库安装到 Claude Code 用户 Skill 目录
+~/.claude/skills/agent-workstyle/，根部保留 SKILL.md。
+不要覆盖未知目录或修改已有配置。安装后开新会话，用 /agent-workstyle 检查加载。
 ```
 
-技能可由客户端按描述自动选择，也可显式调用；贴链接只是安装入口，不意味着跳过安装、网络权限或客户端策略。旧会话不保证自动刷新。若当前客户端没有 skill-installer，可让它从此公开仓库下载并审阅文件，再安装到该客户端支持的 Codex skills 目录，不复制账号或关闭权限控制。
-
-给能运行官方安装器的环境，等价参数是：
+**Codex：**
 
 ```text
-install-skill-from-github.py --repo Harviewang/codex-workstyle --path . --name codex-workstyle
+请用官方 skill-installer 安装 https://github.com/Harviewang/agent-workstyle，仓库技能路径为 .，名称 agent-workstyle。
+等价参数：--repo Harviewang/agent-workstyle --path . --name agent-workstyle。
+只安装 Skill，保留已有配置。安装后开新会话，使用 $agent-workstyle 检查加载。
 ```
 
-上面是官方 skill-installer 辅助脚本的参数示意，不是本仓库提供的独立命令。脚本实际位置由目标电脑的技能目录决定，不硬编码源电脑路径。
+**Gemini（agy / Antigravity CLI）：**
 
-## 它会怎样协作
+```text
+请把 https://github.com/Harviewang/agent-workstyle 克隆到 ~/.gemini/config/skills/agent-workstyle/（全局）
+或项目根的 .agents/skills/agent-workstyle/（仅该项目），根部保留 SKILL.md。
+保留已有配置。安装后开新会话，确认能发现 agent-workstyle。
+```
 
-- **接手**：找到现有项目说明、完整要求、进度与有效授权；项目已有流程就沿用，没有时按需使用包内流程。
-- **沟通**：说清做了什么、结果怎样、下一步和确需用户决定的事项；给推荐与后果，技术依据作补充。
-- **推进**：同一已授权小步内完成实施、检查、修复和交付，减少重复确认；新增范围和独立权限继续区分。
-- **记录**：保留原话来源，累加前后要求，明确已提出、已落实、已验证和待观察。
+**Gemini CLI：**
 
-普通问答直接回答。不会为安装技能而修改 Claude、读取私人聊天或自动操作生产、浏览器、提交和部署。
+```text
+请用 gemini skills install https://github.com/Harviewang/agent-workstyle 安装 agent-workstyle，然后用 gemini skills list 确认已启用。
+```
 
-## 两种安装模式
+部分账号层级可能无法使用 Gemini CLI（例如报 IneligibleTierError），这时改用 agy。
 
-**推荐：原生 Skill 安装。** 上面的 URL 方法只安装技能，便于显式使用，不修改 `config.toml`。原生安装的移除/更新沿用安装它的客户端机制，本仓库完整模式的撤销命令不管理它。
+更多安装、新会话与只读检查命令见 [clients.md](references/clients.md)。安装方式由客户端提供，本包不新增调度程序，不要求指定型号或其他厂商。
 
-**可选：持久工作指引。** 如果明确希望每次项目工作都加载规范，而且尚未原生安装同名 Skill，可从仓库源码使用 [完整模式说明](README.zh-CN.md)。该工具仅依赖 Python 3.11+ 标准库，默认只预览，显式安装才追加指引，并提供备份、检查和撤销。不要叠加两种模式或覆盖同名未知文件。
+## 协作与审查
+
+先读取项目说明、完整要求、进度及有效授权；已有流程就沿用。普通问答直接回答，工程工作按 [workflow.md](references/workflow.md) 分级。正文解释结果与影响，技术依据放附录；同一已授权小步连续做完，新增范围和发布等独立权限继续确认。
+
+独立性：新会话（未参与产出）< 跨模型 < 跨厂。L0 用新会话；L1 优先跨厂，不可用时同厂新会话并记原因；L2 至少一名跨厂审查者。单厂 L0/L1 标“同厂回退”；L2 只能推进到“已修改、待审”，用户明确接受同厂结论才可完成。独立测试、代码审计、回归各用未参与对应产出的不同新会话，自检不代替独立结论。
+
+七种组合和能力档位见 [routing.md](references/routing.md)，切换信号与接替见 [failover.md](references/failover.md)。无档案时按探测到的 CLI 决定可用厂商；命令存在不证明鉴权或额度可用，未知就记未知。个人档案约定 `~/.config/agent-workstyle/profile.toml`，格式见 [example.toml](profiles/example.toml)，实际型号映射不入库。
+
+## 两种模式与旧版迁移
+
+**推荐原生 Skill 模式：** 三家按各自客户端安装，只加载 Skill，不写持久全局配置。从 `codex-workstyle` 迁移时，先按原客户端安装/卸载机制移除旧名，再原生安装 `agent-workstyle`。不删除未知文件，不以本仓库 setup.py 撤销原生安装。
+
+**可选 Codex 持久配置模式：** 仅 Codex 适用，Python 3.11+ 标准库，默认预览，显式安装才写配置，详情见 [README.zh-CN.md](README.zh-CN.md)。从旧版迁移时，先用 **1.0.1 的原始 setup.py** 执行 `uninstall` 预览，再执行 `uninstall --apply` 撤销旧配置段；保留私有备份，然后安装新名。新版脚本不负责撤销旧名。
+
+两种模式不叠加。旧显式调用 `$codex-workstyle` 改为 `$agent-workstyle`；Claude 使用 `/agent-workstyle`。切换模式先按原模式撤销，核对保留内容再安装。目录名称对应：`codex-workstyle/` → `agent-workstyle/`；不搬运源电脑的历史授权。
 
 ## 验证与边界
 
-在仓库目录运行：
+在独立 Git 仓库内运行：
 
-```text
-python3 -B -m unittest discover -s tests -v
-python3 scripts/check_public.py --index
+```sh
+python3 -m unittest discover -s tests -v
+python3 scripts/check_public.py --index --extra-terms ~/.config/agent-workstyle/private-terms.txt
 ```
 
-Windows 可用 `py -3` 或 `python` 替换 `python3`，Python 版本需不低于 3.11。GitHub Actions 配置了 macOS、Linux、Windows 与 Python 3.11/3.13；实际通过情况见仓库 Actions，不能把配置矩阵说成已经实测通过。
+第二条检查暂存内容，更新清单与 SHA256 后先 `git add`。`--extra-terms` 指向仓库外的私有词表（每行一个，如你的用户名、订阅名），只在发布者本机使用，不入库。Windows 可用 `py -3` 或 `python`，Python 至少 3.11。CI 配置三种系统与两个 Python 版本；实际结果以 Actions 为准，配置矩阵不等于已经通过。
 
-已有本地 macOS 隔离测试和新 Codex 会话情境验证。这些不保证每次模型行为正确，不是浏览器/生产权限，不是自动 hook 或 CI 门禁，也不迁移源电脑的历史授权。
+本地静态检查、情境回答与真实客户端原生加载是不同证据。若只能显式读 SKILL.md，标“非原生加载”，只算部分验证，该客户端原生加载记待完成，不得宣称三家均已验证。安装检查不保证每次行为正确；本包不是 hook、权限门禁或浏览器/生产授权。
 
-## 隐私和开源范围
+## 隐私与许可
 
-只发布 `PUBLIC_FILES.json` 明确列出的通用说明、原创工具、合成测试和 CI；新建独立 Git 历史，不携带来源项目历史。公开目录不包含个人配置、私有备份、凭据、真实项目数据、聊天原话、工作台账、主机信息或会话日志。扫描仅是辅助，发布前仍须逐文件核对。
+只发布 `PUBLIC_FILES.json` 列明的通用资料、工具、合成测试与 CI。不得提交个人型号、订阅、用户名、本机绝对路径、聊天原话、工作记录、账号或秘密；真实私有档案和安装备份不入库。扫描仅辅助，仍需人工审查，见 [SECURITY.md](SECURITY.md)。
 
-安装工具在用户自己的 Codex 目录生成的私有备份**不属于开源内容**，不能上传到 Issue 或公开仓库。见 [安全说明](SECURITY.md)。
-
-## 结构参考与许可
-
-结构参考 [Anthropic Skills](https://github.com/anthropics/skills)、[OpenAI Plugins](https://github.com/openai/plugins) 和 Agent Skills 标准。只借鉴目录/元数据/引用方式，不复制第三方技能正文；不是 OpenAI 或 Anthropic 官方项目。
-
-本仓库原创内容使用 [MIT License](LICENSE)。
+遵循 [Agent Skills](https://agentskills.io) 的目录结构；结构参考 [Anthropic Skills](https://github.com/anthropics/skills) 与 [OpenAI Plugins](https://github.com/openai/plugins)，不复制第三方正文，不是厂商官方项目。原创内容使用 [MIT License](LICENSE)。

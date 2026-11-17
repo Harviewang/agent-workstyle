@@ -1,4 +1,4 @@
 interface:
-  display_name: "Codex 协作工作方式"
+  display_name: "agent-workstyle 协作工作方式"
   short_description: "清楚说明进度与决策，完整记录要求，在已授权范围内持续完成项目工作"
-  default_prompt: "使用 $codex-workstyle 接续当前任务，先核对已有要求与授权，清楚沟通并连续完成已批准的工作。"
+  default_prompt: "使用 $agent-workstyle 接续当前任务，先核对已有要求与授权，清楚沟通并连续完成已批准的工作。"

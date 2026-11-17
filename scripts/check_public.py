@@ -11,11 +11,28 @@ ROOT = Path(__file__).resolve().parents[1]
 PRIVATE_PARTS = {'.git', '.codex', '.claude', '.dev-flow', 'evidence', 'workstyle-state', 'backups'}
 PATTERNS = {
     'private-home-path': re.compile(r'(?:/(?:Users|home)/[^/\\\s]+|[A-Za-z]:[\\/](?:Users|Documents and Settings)[\\/][^/\\\s]+)'),
+    'private-user-home': re.compile(r'/'+ 'Us' + r'ers/'),
+    'model-name': re.compile(
+        r'(?i)\b(?:' + 'Fa' + 'ble|' + 'Op' + 'us|' + 'Son' + 'net|' + 'Hai' + 'ku|'
+        + 'gp' + r't-[A-Za-z0-9][A-Za-z0-9.*_-]*|'
+        + 'Ge' + r'mini[ -]+[0-9][A-Za-z0-9.*_-]*(?:[ -]+[A-Za-z0-9._-]+)?)\b'),
     'private-key': re.compile(r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----'),
     'github-token': re.compile(r'\bgh[pousr]_[A-Za-z0-9]{30,}\b|\bgithub_pat_[A-Za-z0-9_]{30,}\b'),
     'cloud-key': re.compile(r'\bAKIA[0-9A-Z]{16}\b|\bLTAI[0-9A-Za-z]{12,}\b'),
     'assigned-secret': re.compile(r'''(?i)\b(?:api[_-]?key|password|client_secret|access_token)\s*[:=]\s*["'][A-Za-z0-9_+=/-]{16,}["']'''),
 }
+
+
+def load_private_terms(path):
+    """Read caller-supplied private terms (one per line, '#' comments); kept outside the repo."""
+    terms = []
+    for line in Path(path).read_text(encoding='utf-8').splitlines():
+        line = line.strip()
+        if line and not line.startswith('#'):
+            terms.append(line)
+    if terms:
+        PATTERNS['private-term'] = re.compile('(?i)' + '|'.join(re.escape(term) for term in terms))
+    return len(terms)
 
 
 def scan_content(name, data):
@@ -76,8 +93,12 @@ def from_index(root):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--index', action='store_true', help='Check exact Git index blobs, not working-tree copies')
+    parser.add_argument('--extra-terms', metavar='FILE',
+                        help='Private terms file kept outside the repository (one literal term per line)')
     args = parser.parse_args()
     try:
+        if args.extra_terms:
+            load_private_terms(args.extra_terms)
         if args.index:
             contents = from_index(ROOT)
         else:
@@ -91,8 +112,12 @@ def main():
                 contents[name] = path.read_bytes()
         print(json.dumps(validate_release(contents), ensure_ascii=True, indent=2))
         return 0
-    except (ValueError, KeyError, TypeError, OSError, subprocess.CalledProcessError):
-        # Detailed pattern findings are safe, but command errors may contain host data.
+    except ValueError as error:
+        # Our own ValueError messages carry only file/line/category, never matched values.
+        print('Public-file check failed: ' + str(error), file=sys.stderr)
+        return 1
+    except (KeyError, TypeError, OSError, subprocess.CalledProcessError):
+        # Command and OS errors may contain host data.
         print('Public-file check failed; inspect the allowlist, digests and selected sensitive patterns locally.', file=sys.stderr)
         return 1
 

@@ -12,9 +12,9 @@ import tempfile
 import tomllib
 import uuid
 
-NAME = 'codex-workstyle'
-VERSION = '1.0.1'
-START, END = '[codex-workstyle:start]', '[codex-workstyle:end]'
+NAME = 'agent-workstyle'
+VERSION = '2.0.0'
+START, END = '[agent-workstyle:start]', '[agent-workstyle:end]'
 PAYLOAD = ('SKILL.md', 'agents/openai.yaml', 'references/workflow.md',
            'references/records.md', 'scripts/setup.py', 'README.zh-CN.md', 'LICENSE')
 SOURCE = Path(__file__).resolve().parents[1]

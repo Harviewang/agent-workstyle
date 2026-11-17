@@ -1,6 +1,10 @@
 import hashlib
 import importlib.util
 import json
+import shutil
+import subprocess
+import sys
+import tempfile
 from pathlib import Path
 import unittest
 
@@ -60,6 +64,68 @@ class PublicReleaseTests(unittest.TestCase):
             findings = guard.scan_content('sample.txt', sample.encode())
             self.assertTrue(findings)
             self.assertNotIn(sample, json.dumps(findings))
+
+    def test_vendor_neutral_names_and_new_files_are_listed(self):
+        manifest = json.loads((ROOT / 'PUBLIC_FILES.json').read_text(encoding='utf-8'))
+        self.assertEqual(manifest['version'], '2.0.0')
+        for name in ['references/routing.md', 'references/failover.md',
+                     'references/clients.md', 'profiles/example.toml']:
+            self.assertIn(name, manifest['files'])
+        self.assertIn('name: agent-workstyle', (ROOT / 'SKILL.md').read_text(encoding='utf-8'))
+
+    def test_forbidden_terms_rejected_before_digest_validation(self):
+        samples = ['Fa' + 'ble', 'Op' + 'us', 'Son' + 'net', 'Hai' + 'ku',
+                   'gp' + 't-6-example', 'Ge' + 'mini 4-example',
+                   'Ge' + 'mini 3.8-example', '/Us' + 'ers/x']
+        for sample in samples:
+            with self.subTest(sample=sample):
+                with self.assertRaisesRegex(ValueError, '敏感模式'):
+                    guard.validate_release(release({'example.txt': sample.encode()}))
+
+    def test_private_terms_file_is_applied_without_echoing_terms(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            terms = Path(temporary) / 'private-terms.txt'
+            terms.write_text('# synthetic\nzebracorn-handle\n', encoding='utf-8')
+            saved = dict(guard.PATTERNS)
+            try:
+                self.assertEqual(guard.load_private_terms(terms), 1)
+                findings = guard.scan_content('example.txt', b'hello ZebraCorn-Handle')
+                self.assertEqual([f['category'] for f in findings], ['private-term'])
+                self.assertNotIn('zebracorn', json.dumps(findings).lower())
+                self.assertEqual(guard.scan_content('example.txt', b'hello world'), [])
+            finally:
+                guard.PATTERNS.clear()
+                guard.PATTERNS.update(saved)
+
+    def test_temporary_copy_with_forbidden_content_fails_cli(self):
+        names = json.loads((ROOT / 'PUBLIC_FILES.json').read_text(encoding='utf-8'))['files']
+        for sample in ['Op' + 'us', '/Us' + 'ers/x']:
+            with self.subTest(sample=sample), tempfile.TemporaryDirectory() as temporary:
+                target = Path(temporary)
+                for name in names:
+                    destination = target / name
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copyfile(ROOT / name, destination)
+                with (target / 'README.md').open('a', encoding='utf-8') as output:
+                    output.write('\n' + sample + '\n')
+                # Update digests so only the privacy violation causes rejection.
+                (target / 'SHA256SUMS').write_text(''.join(
+                    hashlib.sha256((target / name).read_bytes()).hexdigest() + '  ' + name + '\n'
+                    for name in sorted(names) if name != 'SHA256SUMS'), encoding='utf-8')
+                result = subprocess.run([sys.executable, str(target / 'scripts/check_public.py')],
+                                        capture_output=True, text=True)
+                self.assertEqual(result.returncode, 1, result.stdout)
+                self.assertIn('Public-file check failed', result.stderr)
+                self.assertRegex(result.stderr, 'model-name|private-home-path|private-user-home')
+                findings = guard.scan_content('README.md', (target / 'README.md').read_bytes())
+                self.assertTrue(findings)
+                self.assertNotIn(sample, result.stderr)
+
+    def test_vendor_names_and_private_profile_convention_are_allowed(self):
+        sample = b'Claude Codex Gemini gemini skills install agy -p'
+        self.assertFalse(guard.scan_content('sample.txt', sample))
+        self.assertFalse(guard.scan_content('sample.txt',
+                         b'~/.config/agent-workstyle/profile.toml'))
 
     def test_non_utf8_rejected(self):
         with self.assertRaises(ValueError):

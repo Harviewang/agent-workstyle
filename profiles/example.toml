@@ -1,0 +1,26 @@
+# 仅作格式示例，不是自动路由配置；复制到本机私有
+# ~/.config/agent-workstyle/profile.toml 后再填写，不提交真实型号或账号。
+# 占位值表示尚未配置，不证明对应厂商、CLI 或额度可用。
+[claude]
+vendor = "Claude"
+top = "<top-model>"
+main = "<main-model>"
+daily = "<daily-model>"
+chores = "<chores-model>"
+reading = "<reading-model>"
+
+[codex]
+vendor = "Codex"
+top = "<top-model>"
+main = "<main-model>"
+daily = "<daily-model>"
+chores = "<chores-model>"
+reading = "<reading-model>"
+
+[gemini]
+vendor = "Gemini"
+top = "<top-model>"
+main = "<main-model>"
+daily = "<daily-model>"
+chores = "<chores-model>"
+reading = "<reading-model>"

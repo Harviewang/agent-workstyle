@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1",
+  "version": "2.0.0",
   "files": [
     ".gitattributes",
     ".github/workflows/tests.yml",
@@ -12,7 +12,11 @@
     "SHA256SUMS",
     "SKILL.md",
     "agents/openai.yaml",
+    "profiles/example.toml",
+    "references/clients.md",
+    "references/failover.md",
     "references/records.md",
+    "references/routing.md",
     "references/workflow.md",
     "scripts/check_public.py",
     "scripts/setup.py",
