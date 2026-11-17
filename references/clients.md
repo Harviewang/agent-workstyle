@@ -41,7 +41,7 @@ codex exec --sandbox read-only '使用 $agent-workstyle，只读检查指定产�
 Gemini CLI 使用自带的 Skill 安装命令；本地目录或 Git URL 的支持情况先查目标版本帮助：
 
 ```sh
-gemini skills install https://github.com/Harviewang/agent-workstyle
+gemini skills install https://github.com/Harviewang/agent-workstyle --consent
 ```
 
 安装后重新开启会话，要求使用 agent-workstyle，并检查技能发现及固定问题回答。独立检查不用恢复参数，另起进程：

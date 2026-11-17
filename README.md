@@ -33,7 +33,8 @@
 **Gemini CLI：**
 
 ```text
-请用 gemini skills install https://github.com/Harviewang/agent-workstyle 安装 agent-workstyle，然后用 gemini skills list 确认已启用。
+请用 gemini skills install https://github.com/Harviewang/agent-workstyle --consent 安装 agent-workstyle，然后用 gemini skills list 确认已启用。
+（--consent 表示已阅读安全提示并跳过交互确认，避免代装时卡住。）
 ```
 
 部分账号层级可能无法使用 Gemini CLI（例如报 IneligibleTierError），这时改用 agy。

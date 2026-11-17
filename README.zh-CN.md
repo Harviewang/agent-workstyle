@@ -70,7 +70,7 @@ python3 scripts/setup.py uninstall --apply
 
 - Claude：将完整仓库克隆/复制到 `~/.claude/skills/agent-workstyle/`，新会话使用 `/agent-workstyle`，不要覆盖未知目录。
 - Codex：用官方 skill-installer 安装 `https://github.com/Harviewang/agent-workstyle`，参数 `--repo Harviewang/agent-workstyle --path . --name agent-workstyle`，新会话使用 `$agent-workstyle`，保留已有配置。
-- Gemini：先查本机帮助，再运行 `gemini skills install https://github.com/Harviewang/agent-workstyle`，新会话检查技能发现。使用 agy 时克隆到 `~/.gemini/config/skills/agent-workstyle/` 或项目 `.agents/skills/agent-workstyle/`；部分账号层级无法使用 Gemini CLI 时改用 agy。
+- Gemini：先查本机帮助，再运行 `gemini skills install https://github.com/Harviewang/agent-workstyle --consent`，新会话检查技能发现。使用 agy 时克隆到 `~/.gemini/config/skills/agent-workstyle/` 或项目 `.agents/skills/agent-workstyle/`；部分账号层级无法使用 Gemini CLI 时改用 agy。
 
 各家独立新会话和只读检查方式见 [clients.md](references/clients.md)。原生安装保留完整 references 与 profiles；本文持久模式沿用原工具的核心文件清单，仅复制开发流程、记录约定等核心文件，新增调度/切换/客户端参考及档案示例从来源仓库读取，不宣称已复制完整包。核心流程自身包含独立性底线。
 
