@@ -47,7 +47,7 @@
 
 独立性：新会话（未参与产出）< 跨模型 < 跨厂。L0 用新会话；L1 优先跨厂，不可用时同厂新会话并记原因；L2 至少一名跨厂审查者。单厂 L0/L1 标“同厂回退”；L2 只能推进到“已修改、待审”，用户明确接受同厂结论才可完成。独立测试、代码审计、回归各用未参与对应产出的不同新会话，自检不代替独立结论。
 
-七种组合和能力档位见 [routing.md](references/routing.md)，切换信号与接替见 [failover.md](references/failover.md)。无档案时按探测到的 CLI 决定可用厂商；命令存在不证明鉴权或额度可用，未知就记未知。个人档案约定 `~/.config/agent-workstyle/profile.toml`，格式见 [example.toml](profiles/example.toml)，实际型号映射不入库。
+七种组合和能力档位见 [routing.md](references/routing.md)，切换信号与接替见 [failover.md](references/failover.md)。无档案时按探测到的 CLI 决定可用厂商；命令存在不证明鉴权或额度可用，未知就记未知。个人档案约定 `~/.config/agent-workstyle/profile.toml`，格式见 [example.toml](profiles/example.toml)。第一次使用时没有档案，Skill 会问你这台电脑有哪几家、各家怎么分档，生成草稿经你确认后只写在本机；档案属于个人数据，不入库、不上传、不写进日志或报告。
 
 ## 两种模式与旧版迁移
 

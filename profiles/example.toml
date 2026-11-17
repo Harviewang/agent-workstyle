@@ -1,5 +1,6 @@
-# 仅作格式示例，不是自动路由配置；复制到本机私有
-# ~/.config/agent-workstyle/profile.toml 后再填写，不提交真实型号或账号。
+# 仅作格式示例，不是自动路由配置。真实档案只放本机
+# ~/.config/agent-workstyle/profile.toml（首次使用时可由 Skill 询问后生成，经确认才写入）；
+# 真实档案是个人数据：不提交、不上传、不写进日志或报告。没有的厂商整段删除即可。
 # 占位值表示尚未配置，不证明对应厂商、CLI 或额度可用。
 [claude]
 vendor = "Claude"
